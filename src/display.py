@@ -13,9 +13,11 @@ def display_repos(repoList):
         print("User does not have any repository.")
         return
     
+    repoList = [repo for repo in repoList if not repo.get('fork')] 
+    #filtering out forked repositories, as they are not original work of the user
     sortedData = sorted(repoList, key = lambda x: x['stargazers_count'], reverse = True)
     
-    print(f"\nTotal Repositories: {len(sortedData)} \n")
+    print(f"\nTotal Repositories (non-forked): {len(sortedData)} \n")
     print('-' * 65)
     print(
         "Repositories".ljust(30) + 

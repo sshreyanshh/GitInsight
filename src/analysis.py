@@ -1,6 +1,8 @@
 from collections import Counter
 
 def mostUsedLanguage(repos):
+    repos = [repo for repo in repos if not repo.get('fork')]
+    #filtering out forked repositories, as they are not original work of the user
     langCount = []
     for repo in repos:
         lang = repo.get('language') or "N/A"
@@ -16,11 +18,13 @@ def mostStarredRepo(repos):
     if not repos:
         return None
     
+    repos = [repo for repo in repos if not repo.get('fork')]
     sortedData = sorted(repos, key = lambda x: x['stargazers_count'], reverse = True)
 
     return sortedData[0]
 
 def getTotalStars(repos):
+    repos = [repo for repo in repos if not repo.get('fork')]
     total = 0
     for repo in repos:
         stars = repo.get('stargazers_count')
@@ -30,6 +34,7 @@ def getTotalStars(repos):
     return total
 
 def languageWiseData(repos):
+    repos = [repo for repo in repos if not repo.get('fork')]
     data = {}
     for repo in repos:
         if (repo.get('language') or "N/A") in data:
