@@ -6,6 +6,7 @@ def display_user(data):
     print(f"Following:              {data.get('following')}")
     print(f"Location:               {data.get('location', 'N/A')}")
     print(f"Account created at:     {data.get('created_at', 'N/A')}")
+    print()
 
 def display_repos(repoList):
     if not repoList:
@@ -36,3 +37,23 @@ def display_repos(repoList):
             stars.rjust(10) + 
             fork.rjust(10)
         )
+    print()
+
+def displayStats(stats):
+    print()
+    print(
+        '=' * 30 +
+        "STATISTICS" +
+        '=' * 30
+    )
+
+    print(f"Most Used Language:         {stats["lang"]}")
+    print(f"Total Stars:                {stats["totalstars"]}")
+    print(f"Most Starred Repository:    {stats["moststarred"]["name"]}({stats["moststarred"]["stars"]} stars)")
+    print()
+    print("Language Breakdown:")
+    for key, value in stats["langwise"].items():
+        print(key.ljust(20) + ": " + str(value) + " repository(ies)")
+
+    print('=' * 70)
+    print()
