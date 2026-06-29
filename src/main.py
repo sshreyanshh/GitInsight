@@ -8,4 +8,5 @@ if data:
     display_user(data)
 
 repodata = fetch_repos(username)
-display_repos(repodata)
+if repodata: #to play safe if fetch_repos returns None, due to any error
+    display_repos(repodata)

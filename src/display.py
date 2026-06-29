@@ -10,7 +10,7 @@ def display_user(data):
 def display_repos(repoList):
     if not repoList:
         print("User does not have any repository.")
-        return None
+        return
     
     sortedData = sorted(repoList, key = lambda x: x['stargazers_count'], reverse = True)
     
