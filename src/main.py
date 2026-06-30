@@ -15,6 +15,7 @@ from analysis import (
     mostActiveRepo
 )
 from rich.console import Console
+from report import GitInsightReport
 
 con = Console()
 
@@ -53,3 +54,19 @@ with con.status("[bold green]Fetching Events Data....", spinner = "dots"):
 if eventData:
     activity = [countEventType(eventData), mostActiveDay(eventData), mostActiveRepo(eventData)]
     displayActivity(activity)
+
+print()
+choice = str(input("Do you want to generate PDF report? (y/n):    "))
+if choice.lower() == 'y':
+    report = GitInsightReport(username)
+    if data:
+        report.addProfileSec(data)
+    if userstats:
+        report.addStats(userstats)
+    if repodata and userstats:
+        report.addRepo(repodata, userstats)
+    if activity:
+        report.addActivity(activity)
+
+    filename = report.save()
+    con.print(f"[bold green]Report Generated Successfully![/bold green] [bold blue]Saved to {filename}[/bold blue]")

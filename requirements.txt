@@ -1,8 +1,12 @@
 certifi==2026.6.17
 charset-normalizer==3.4.7
+defusedxml==0.7.1
+fonttools==4.63.0
+fpdf2==2.8.7
 idna==3.18
 markdown-it-py==4.2.0
 mdurl==0.1.2
+pillow==12.2.0
 Pygments==2.20.0
 python-dotenv==1.2.2
 requests==2.34.2
