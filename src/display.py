@@ -55,7 +55,11 @@ def displayStats(stats):
     print()
     print("Language Breakdown:")
     for key, value in stats["langwise"].items():
-        print(key.ljust(20) + ": " + str(value) + " repository(ies)")
+        if value == 1:
+            str1 = "repository"
+        else:
+            str1 = "repositories"
+        print(key.ljust(20) + ": " + str(value) + " " +str1)
 
     print('=' * 70)
     print()
