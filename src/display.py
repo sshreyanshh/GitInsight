@@ -1,11 +1,33 @@
+from rich.panel import Panel
+from rich.console import Console
+from rich.table import Table
+from datetime import datetime
+
+con = Console()
+
 def display_user(data):
-    print(f"Name:                   {data.get('name', 'N/A')}") #N/A is the default value, will be printed if no 'name' key exists or has a None value
-    print(f"Username:               {data.get('login')}")
-    print(f"Public Repositories:    {data.get('public_repos')}")
-    print(f"Followers:              {data.get('followers')}")
-    print(f"Following:              {data.get('following')}")
-    print(f"Location:               {data.get('location', 'N/A')}")
-    print(f"Account created at:     {data.get('created_at', 'N/A')}")
+    name = data.get('name', 'N/A')
+    login = data.get('login', 'N/A')
+    public_repos = data.get('public_repos', 'N/A')
+    followers = data.get('followers', 'N/A')
+    following = data.get('following', 'N/A')
+    location = data.get('location', 'N/A')
+    created_at = data.get('created_at', 'N/A')
+
+    formatted = datetime.strptime(created_at, "%Y-%m-%dT%H:%M:%SZ").strftime("%d %B %Y")
+
+    con.print(Panel(
+        f"Name:                     {name}\n"
+        f"Username:                 {login}\n"
+        f"Public Repositories:      {public_repos}\n"
+        f"Followers:                {followers}\n"
+        f"Following:                {following}\n"
+        f"Location:                 {location}\n"
+        f"Account Created on:       {formatted}",
+        title = "Profile",
+        expand = False
+    ))
+
     print()
 
 def display_repos(repoList):
@@ -16,16 +38,12 @@ def display_repos(repoList):
     repoList = [repo for repo in repoList if not repo.get('fork')] 
     #filtering out forked repositories, as they are not original work of the user
     sortedData = sorted(repoList, key = lambda x: x['stargazers_count'], reverse = True)
-    
-    print(f"\nTotal Repositories (non-forked): {len(sortedData)} \n")
-    print('-' * 65)
-    print(
-        "Repositories".ljust(30) + 
-        "Language".ljust(15) + 
-        "Stars".rjust(10) + 
-        "Forks".rjust(10)
-    )
-    print('-' * 65)
+
+    table = Table(title = "Repositories")
+    table.add_column("Name", justify = "left", header_style = "bold")
+    table.add_column("Language", justify = "left", header_style = "bold")
+    table.add_column("Stars", justify = "center", header_style = "bold")
+    table.add_column("Forks", justify = "center", header_style = "bold")
 
     for repo in sortedData:
         name = repo.get('name')
@@ -33,46 +51,48 @@ def display_repos(repoList):
         stars = str(repo.get('stargazers_count'))
         fork = str(repo.get('forks'))
 
-        print(
-            name.ljust(30) + 
-            lang.ljust(15) + 
-            stars.rjust(10) + 
-            fork.rjust(10)
-        )
+        table.add_row(name, lang, stars, fork)
+    
+    con.print(table)
+
     print()
 
 def displayStats(stats):
+    con.print(Panel(
+        f"Most Used Language        :       {stats["lang"]}\n"
+        f"Total Stars               :       {stats["totalstars"]}\n"
+        f"Most Starred Repository   :       {stats["moststarred"]["name"]} ({stats["moststarred"]["stars"]} stars)",
+        title = "Statistics",
+        expand = False
+    ))
     print()
-    print(
-        '=' * 30 +
-        "STATISTICS" +
-        '=' * 30
-    )
 
-    print(f"Most Used Language:         {stats["lang"]}")
-    print(f"Total Stars:                {stats["totalstars"]}")
-    print(f"Most Starred Repository:    {stats["moststarred"]["name"]} ({stats["moststarred"]["stars"]} stars)")
-    print()
-    print("Language Breakdown:")
+    table = Table(title = "Language Breakdown")
+    table.add_column("Language", justify = "left", header_style = "bold")
+    table.add_column("Number of Repositories", justify = "center", header_style = "bold")
+    
     for key, value in stats["langwise"].items():
-        if value == 1:
-            str1 = "repository"
-        else:
-            str1 = "repositories"
-        print(key.ljust(20) + ": " + str(value) + " " +str1)
+        table.add_row(f"{key}", f"{value}")
 
-    print('=' * 70)
+    con.print(table)
+    
     print()
 
 def displayActivity(activity):
-    print()
-    print('-'*41)
-    print("EVENT TYPE".ljust(25) + "FREQUENCY".rjust(15))
-    print('-'*41)
+    table = Table(title = "Event Frequency")
+    table.add_column("Event Type", justify = "left", header_style = "bold")
+    table.add_column("Frequency", justify = "center", header_style = "bold")
+    
     for key, value in activity[0].items():
-        print(f"{key}".ljust(25) + f"{value}".rjust(15))
+        table.add_row(f"{key}", f"{value}")
+    
+    con.print(table)
     print()
 
-    print(f"Most Active Day of the week:    {activity[1]}")
-    print(f"Most Active Repository:         {activity[2]}")
+    con.print(Panel(
+        f"Most Active Day of the week   :   {activity[1]}\n"
+        f"Most Active Repository        :   {activity[2]}",
+        title = "Activity",
+        expand = False
+    ))
     print()

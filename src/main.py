@@ -14,15 +14,20 @@ from analysis import (
     mostActiveDay,
     mostActiveRepo
 )
+from rich.console import Console
+
+con = Console()
 
 username = input("Enter GitHub Username:    ")
 
-data = fetch_user(username)
+with con.status("[bold green]Fetching User Data....", spinner = "dots"):
+    data = fetch_user(username)
 if data:
     display_user(data)
 
-repodata = fetch_repos(username)
-if repodata: #to play safe if fetch_repos returns None, due to any error
+with con.status("[bold green]Fetching Repository Data....", spinner = "dots"):
+    repodata = fetch_repos(username)
+if repodata: #to play safe if fetch_repos returns None, due to any error like network error
     display_repos(repodata)
 
 if repodata:
@@ -43,7 +48,8 @@ if repodata:
 
     displayStats(userstats)
 
-eventData = fetchEvents(username)
+with con.status("[bold green]Fetching Events Data....", spinner = "dots"):
+    eventData = fetchEvents(username)
 if eventData:
     activity = [countEventType(eventData), mostActiveDay(eventData), mostActiveRepo(eventData)]
     displayActivity(activity)
