@@ -1,10 +1,18 @@
-from client import fetch_user, fetch_repos
-from display import display_user, display_repos, displayStats
+from client import fetch_user, fetch_repos, fetchEvents
+from display import (
+    display_user, 
+    display_repos, 
+    displayStats,
+    displayActivity
+)
 from analysis import (
     mostUsedLanguage,
     mostStarredRepo,
     getTotalStars,
-    languageWiseData
+    languageWiseData,
+    countEventType,
+    mostActiveDay,
+    mostActiveRepo
 )
 
 username = input("Enter GitHub Username:    ")
@@ -34,3 +42,8 @@ if repodata:
     }
 
     displayStats(userstats)
+
+eventData = fetchEvents(username)
+if eventData:
+    activity = [countEventType(eventData), mostActiveDay(eventData), mostActiveRepo(eventData)]
+    displayActivity(activity)

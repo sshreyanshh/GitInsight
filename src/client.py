@@ -68,3 +68,41 @@ def fetch_repos(username):
             page = page + 1
 
     return repos
+
+def fetchEvents(username):
+    token = os.getenv("GITHUB_TOKEN")
+
+    url = f"https://api.github.com/users/{username}/events"
+
+    events = []
+    page = 1
+    while True:
+        headers = {
+            "Authorization": f"token {token}",
+            "Accept": "application/vnd.github.v3+json"
+        }
+
+        params = {
+            "per_page": 100,
+            "page": page
+        }
+
+        try:
+            response = requests.get(url, params = params, headers = headers)
+        except requests.exceptions.ConnectionError:
+            print("No Internet Connection. Please connect to internet and try again.")
+            return None
+        
+        if response.status_code != 200:
+            print(f"Error Occurred. Status Code: {response.status_code}")
+            return None
+        
+        currEventList = response.json()
+        
+        if not currEventList:
+            break
+
+        events.extend(currEventList)
+        page += 1
+    
+    return events

@@ -51,11 +51,24 @@ def displayStats(stats):
 
     print(f"Most Used Language:         {stats["lang"]}")
     print(f"Total Stars:                {stats["totalstars"]}")
-    print(f"Most Starred Repository:    {stats["moststarred"]["name"]}({stats["moststarred"]["stars"]} stars)")
+    print(f"Most Starred Repository:    {stats["moststarred"]["name"]} ({stats["moststarred"]["stars"]} stars)")
     print()
     print("Language Breakdown:")
     for key, value in stats["langwise"].items():
         print(key.ljust(20) + ": " + str(value) + " repository(ies)")
 
     print('=' * 70)
+    print()
+
+def displayActivity(activity):
+    print()
+    print('-'*41)
+    print("EVENT TYPE".ljust(25) + "FREQUENCY".rjust(15))
+    print('-'*41)
+    for key, value in activity[0].items():
+        print(f"{key}".ljust(25) + f"{value}".rjust(15))
+    print()
+
+    print(f"Most Active Day of the week:    {activity[1]}")
+    print(f"Most Active Repository:         {activity[2]}")
     print()
