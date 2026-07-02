@@ -1,41 +1,37 @@
-from client import fetch_user, fetch_repos, fetchEvents
-from display import (
-    display_user, 
-    display_repos, 
-    displayStats,
-    displayActivity
-)
-from analysis import (
-    mostUsedLanguage,
-    mostStarredRepo,
-    getTotalStars,
-    languageWiseData,
-    countEventType,
-    mostActiveDay,
-    mostActiveRepo
-)
+from client import GitHubClient
+from display import Display
+from analysis import Analysis
 from rich.console import Console
 from report import GitInsightReport
+from dotenv import load_dotenv
+import os
 
 con = Console()
 
+load_dotenv()
+
 username = input("Enter GitHub Username:    ")
 
+token = os.getenv("GITHUB_TOKEN")
+
+client = GitHubClient(token = token, username = username)
+
 with con.status("[bold green]Fetching User Data....", spinner = "dots"):
-    data = fetch_user(username)
-if data:
-    display_user(data)
+    data = client.fetchUser()
 
 with con.status("[bold green]Fetching Repository Data....", spinner = "dots"):
-    repodata = fetch_repos(username)
-if repodata: #to play safe if fetch_repos returns None, due to any error like network error
-    display_repos(repodata)
+    repodata = client.fetchRepos()
+
+with con.status("[bold green]Fetching Events Data....", spinner = "dots"):
+    eventData = client.fetchEvents()
+
+analysis = Analysis(repos = repodata, events = eventData)
 
 if repodata:
-    lang = mostUsedLanguage(repodata)
-    totalstars = getTotalStars(repodata)
-    starred = mostStarredRepo(repodata)
-    langwise = languageWiseData(repodata)
+    lang = analysis.mostUsedLanguage()
+    totalstars = analysis.getTotalStars()
+    starred = analysis.mostStarredRepo()
+    langwise = analysis.langWiseData()
 
     userstats = {
         "lang": lang,
@@ -46,14 +42,24 @@ if repodata:
         },
         "langwise" : langwise
     }
+else:
+    userstats = {}
 
-    displayStats(userstats)
-
-with con.status("[bold green]Fetching Events Data....", spinner = "dots"):
-    eventData = fetchEvents(username)
 if eventData:
-    activity = [countEventType(eventData), mostActiveDay(eventData), mostActiveRepo(eventData)]
-    displayActivity(activity)
+    activity = [analysis.countEventType(), analysis.mostActiveDay(), analysis.mostActiveRepo()]
+else:
+    activity = []
+
+display = Display(data = data, repoList = repodata, stats = userstats, activity = activity)
+
+display.displayUser()
+print()
+display.displayRepos()
+print()
+display.displayStats()
+print()
+display.displayActivity()
+print()
 
 print()
 choice = str(input("Do you want to generate PDF report? (y/n):    "))

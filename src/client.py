@@ -1,108 +1,94 @@
 import requests
-import os
-from dotenv import load_dotenv
+from rich.console import Console
 
-load_dotenv()
+con = Console()
 
-def fetch_user(username):
-    token = os.getenv("GITHUB_TOKEN")
+class GitHubClient:
 
-    url = f"https://api.github.com/users/{username}"
-
-    headers = {
-        "Authorization": f"token {token}",
-        "Accept": "application/vnd.github.v3+json"
-    }
-
-    try:
-        response = requests.get(url, headers = headers)
-    except requests.exceptions.ConnectionError:
-        print("No Internet Connection. Kindly Connect to internet and retry.")
-        return None
-    
-    if response.status_code == 404:
-        print(f"User {username} does not exist.")
-        return None
-
-    if response.status_code != 200:
-        print(f"Something went wrong. Status: {response.status_code}")
-        return None
-    
-    return response.json()
-
-
-def fetch_repos(username):
-    token = os.getenv("GITHUB_TOKEN")
-
-    url = f"https://api.github.com/users/{username}/repos"
-
-    repos = []
-    page = 1
-    while True:
-        headers = {
-            "Authorization": f"token {token}",
+    def __init__(self, token, username):
+        self.token = token 
+        self.headers = {
+            "Authorization": f"token {self.token}",
             "Accept": "application/vnd.github.v3+json"
-        }
+        }               
+        self.baseURL = "https://api.github.com/users"
+        self.username = username
+    
+    def fetchUser(self):
+        url = self.baseURL + f"/{self.username}"
+        response = self._makeRequest(url = url)
 
-        params = {
-            "per_page": 100,
-            "page": page
-        }
+        if response is None:
+            return None
+        
+        return response.json()
+    
+    def fetchRepos(self):
+        repos = []
+        page = 1
 
+        while True:
+            params = {
+                "per_page": 100,
+                "page": page
+            }
+
+            response = self._makeRequest(url = self.baseURL + f"/{self.username}/repos", params = params)
+            
+            if response is None:
+                return None
+            
+            repoList = response.json()
+
+            if not repoList:
+                break
+
+            repos.extend(repoList)
+            page += 1
+        
+        return repos
+    
+    def fetchEvents(self):
+        events = []
+        page = 1
+
+        while True:
+            params = {
+                "per_page": 100,
+                "page": page
+            }
+
+            response = self._makeRequest(url = self.baseURL + f"/{self.username}/events", params = params)
+            
+            if response is None:
+                return None
+            
+            eventList = response.json()
+
+            if not eventList:
+                break
+
+            events.extend(eventList)
+            page += 1
+        
+        return events
+    
+    def _makeRequest(self, url, params = None):
         try:
-            response = requests.get(url, headers = headers, params = params)
+            response = requests.get(url, params = params, headers = self.headers)
         except requests.exceptions.ConnectionError:
-            print("No Internet Connection. Kindly connect to internet and retry.")
+            print("No Internet Connection. Connect to internet and retry")
             return None
         
-        if response.status_code != 200:
-            print(f"Error Occurred while fetching repositories. Status: {response.status_code}")
-            return None
-        
-        repo_per_page = response.json()
+        if response.status_code == 404:
+            print(f"User '{self.username}' not found.")
+            print("Check Username and try again.")
+            print()
+            con.print("[bold red]EXITING PROGRAM[/bold red]")
+            exit()
 
-        if not repo_per_page:
-            break
-        else:
-            repos.extend(repo_per_page) #repos is a list of dictionaries
-            page = page + 1
-
-    return repos
-
-def fetchEvents(username):
-    token = os.getenv("GITHUB_TOKEN")
-
-    url = f"https://api.github.com/users/{username}/events"
-
-    events = []
-    page = 1
-    while True:
-        headers = {
-            "Authorization": f"token {token}",
-            "Accept": "application/vnd.github.v3+json"
-        }
-
-        params = {
-            "per_page": 100,
-            "page": page
-        }
-
-        try:
-            response = requests.get(url, params = params, headers = headers)
-        except requests.exceptions.ConnectionError:
-            print("No Internet Connection. Please connect to internet and try again.")
-            return None
-        
         if response.status_code != 200:
             print(f"Error Occurred. Status Code: {response.status_code}")
             return None
         
-        currEventList = response.json()
-        
-        if not currEventList:
-            break
-
-        events.extend(currEventList)
-        page += 1
-    
-    return events
+        return response
