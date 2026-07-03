@@ -1,3 +1,4 @@
+import logging
 import requests
 from rich.console import Console
 from config import config
@@ -78,18 +79,17 @@ class GitHubClient:
         try:
             response = requests.get(url, params = params, headers = self.headers)
         except requests.exceptions.ConnectionError:
-            print("No Internet Connection. Connect to internet and retry")
+            logging.critical("No Internet Connection. Connect to internet and retry")
             return None
         
         if response.status_code == 404:
-            print(f"User '{self.username}' not found.")
-            print("Check Username and try again.")
-            print()
+            logging.error(f"User '{self.username}' not found.")
+            logging.info("Check Username and try again.")
             con.print("[bold red]EXITING PROGRAM[/bold red]")
             exit()
 
         if response.status_code != 200:
-            print(f"Error Occurred. Status Code: {response.status_code}")
+            logging.error(f"Error Occurred. Status Code: {response.status_code}")
             return None
         
         return response

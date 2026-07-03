@@ -1,3 +1,4 @@
+import logging
 from client import GitHubClient
 from display import Display
 from analysis import Analysis
@@ -5,16 +6,26 @@ from rich.console import Console
 from report import GitInsightReport
 from config import config
 import argparse
+from config import setupLogging
 
 con = Console()
 
 parser = argparse.ArgumentParser(description = "GitInsight - A CLI tool to analyze GitHub user data and generate reports.")
 parser.add_argument("username", help = "GitHub username to analyze")
 parser.add_argument("-r", "--report", action = "store_true", help = "Generate PDF report")
+parser.add_argument("-v", "--verbose", action = "store_true", help = "Enable verbose output")
 
 args = parser.parse_args()
 
-client = GitHubClient(token = config.GITHUB_TOKEN, username = args.username)
+setupLogging(args.verbose)
+
+_token = config.GITHUB_TOKEN
+
+if not _token:
+    logging.critical("GitHub token not found. Please set the GITHUB_TOKEN environment variable.")
+    exit(1)
+
+client = GitHubClient(token = _token, username = args.username)
 
 with con.status("[bold green]Fetching User Data....", spinner = "dots"):
     data = client.fetchUser()
