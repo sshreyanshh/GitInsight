@@ -3,18 +3,18 @@ from display import Display
 from analysis import Analysis
 from rich.console import Console
 from report import GitInsightReport
-from dotenv import load_dotenv
-import os
+from config import config
+import argparse
 
 con = Console()
 
-load_dotenv()
+parser = argparse.ArgumentParser(description = "GitInsight - A CLI tool to analyze GitHub user data and generate reports.")
+parser.add_argument("username", help = "GitHub username to analyze")
+parser.add_argument("-r", "--report", action = "store_true", help = "Generate PDF report")
 
-username = input("Enter GitHub Username:    ")
+args = parser.parse_args()
 
-token = os.getenv("GITHUB_TOKEN")
-
-client = GitHubClient(token = token, username = username)
+client = GitHubClient(token = config.GITHUB_TOKEN, username = args.username)
 
 with con.status("[bold green]Fetching User Data....", spinner = "dots"):
     data = client.fetchUser()
@@ -61,10 +61,8 @@ print()
 display.displayActivity()
 print()
 
-print()
-choice = str(input("Do you want to generate PDF report? (y/n):    "))
-if choice.lower() == 'y':
-    report = GitInsightReport(username)
+if args.report:
+    report = GitInsightReport(args.username)
     if data:
         report.addProfileSec(data)
     if userstats:

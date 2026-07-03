@@ -14,13 +14,13 @@ class Display:
         self.activity = activity
 
     def displayUser(self):
-        name = self.data.get('name', 'N/A')
-        login = self.data.get('login', 'N/A')
-        public_repos = self.data.get('public_repos', 'N/A')
-        followers = self.data.get('followers', 'N/A')
-        following = self.data.get('following', 'N/A')
-        location = self.data.get('location', 'N/A')
-        created_at = self.data.get('created_at', 'N/A')
+        name = self.data.get('name') or "N/A" #if first arg is None (false), or evaluates second argument
+        login = self.data.get('login') or "N/A"
+        public_repos = self.data.get('public_repos') or "N/A"
+        followers = self.data.get('followers') or "N/A"
+        following = self.data.get('following') or "N/A"
+        location = self.data.get('location') or "N/A"
+        created_at = self.data.get('created_at') or "N/A"
 
         formatted = datetime.strptime(created_at, "%Y-%m-%dT%H:%M:%SZ").strftime("%d %B %Y")
 

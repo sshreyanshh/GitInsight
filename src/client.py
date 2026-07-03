@@ -1,5 +1,6 @@
 import requests
 from rich.console import Console
+from config import config
 
 con = Console()
 
@@ -11,7 +12,7 @@ class GitHubClient:
             "Authorization": f"token {self.token}",
             "Accept": "application/vnd.github.v3+json"
         }               
-        self.baseURL = "https://api.github.com/users"
+        self.baseURL = config.BASE_URL
         self.username = username
     
     def fetchUser(self):
@@ -29,7 +30,7 @@ class GitHubClient:
 
         while True:
             params = {
-                "per_page": 100,
+                "per_page": config.PER_PAGE,
                 "page": page
             }
 
@@ -54,7 +55,7 @@ class GitHubClient:
 
         while True:
             params = {
-                "per_page": 100,
+                "per_page": config.PER_PAGE,
                 "page": page
             }
 

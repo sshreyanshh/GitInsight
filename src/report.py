@@ -28,13 +28,13 @@ class GitInsightReport:
 
         self.pdf.set_font("Times", "", 12)
         fields = [
-            ("Name", data.get('name', 'N/A')),
-            ("Username", data.get('login', 'N/A')),
-            ("Public Repositories", str(data.get('public_repos', 'N/A'))),
-            ("Followers", str(data.get('followers', 'N/A'))),
-            ("Following", str(data.get('following', 'N/A'))),
-            ("Location", data.get('location', 'N/A')),
-            ("Account Created on", datetime.strptime(data.get('created_at', 'N/A'), "%Y-%m-%dT%H:%M:%SZ").strftime("%d %B %Y"))
+            ("Name", data.get('name') or "N/A"),
+            ("Username", data.get('login') or "N/A"),
+            ("Public Repositories", str(data.get('public_repos') or "N/A")),
+            ("Followers", str(data.get('followers') or "N/A")),
+            ("Following", str(data.get('following') or "N/A")),
+            ("Location", data.get('location') or "N/A"),
+            ("Account Created on", datetime.strptime(data.get('created_at') or "N/A", "%Y-%m-%dT%H:%M:%SZ").strftime("%d %B %Y"))
         ]        
 
         for label, value in fields:
