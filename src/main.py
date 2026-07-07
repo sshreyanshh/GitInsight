@@ -7,6 +7,8 @@ from report import GitInsightReport
 from config import config
 import argparse
 from config import setupLogging
+import asyncio
+from _async import AsyncGitHubClient
 
 con = Console()
 
@@ -25,16 +27,10 @@ if not _token:
     logging.critical("GitHub token not found. Please set the GITHUB_TOKEN environment variable.")
     exit(1)
 
-client = GitHubClient(token = _token, username = args.username)
+client = AsyncGitHubClient(token = _token, username = args.username)
 
-with con.status("[bold green]Fetching User Data....", spinner = "dots"):
-    data = client.fetchUser()
-
-with con.status("[bold green]Fetching Repository Data....", spinner = "dots"):
-    repodata = client.fetchRepos()
-
-with con.status("[bold green]Fetching Events Data....", spinner = "dots"):
-    eventData = client.fetchEvents()
+with con.status("[bold green]Fetching Data....", spinner = "dots"):
+    data, repodata, eventData = asyncio.run(client.fetchAll())
 
 analysis = Analysis(repos = repodata, events = eventData)
 
