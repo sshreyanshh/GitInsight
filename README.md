@@ -53,6 +53,20 @@ pip install gitinsight-py
 
 To bypass standard GitHub API rate limits, GitInsight requires a GitHub Personal Access Token. 
 
+### Getting Your Token
+
+1. Go to [GitHub Settings → Developer Settings → Personal Access Tokens → Tokens (Classic)](https://github.com/settings/tokens)
+2. Click **"Generate new token (classic)"**
+3. Give it a name: `gitinsight`
+4. Set expiration: 90 days or no expiration
+5. Select these scopes:
+   - `read:user`
+   - `public_repo`
+6. Click **"Generate token"**
+7. Copy it immediately — GitHub shows it only once
+
+<br>
+
 Upon your first time executing the command, the CLI will prompt you for this token:
 
 ```bash
