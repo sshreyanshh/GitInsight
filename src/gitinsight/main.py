@@ -1,14 +1,14 @@
 import logging
-from client import GitHubClient
-from display import Display
-from analysis import Analysis
+from gitinsight.client import GitHubClient
+from gitinsight.display import Display
+from gitinsight.analysis import Analysis
 from rich.console import Console
-from report import GitInsightReport
-from config import config
+from gitinsight.report import GitInsightReport
+from gitinsight.config import config
 import argparse
-from config import setupLogging
+from gitinsight.config import setupLogging
 import asyncio
-from _async import AsyncGitHubClient
+from gitinsight._async import AsyncGitHubClient
 
 con = Console()
 

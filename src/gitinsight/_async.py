@@ -1,7 +1,7 @@
 import aiohttp
 import asyncio
 import logging
-from config import config
+from gitinsight.config import config
 from rich.console import Console
 
 con = Console()

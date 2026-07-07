@@ -1,7 +1,7 @@
 import logging
 import requests
 from rich.console import Console
-from config import config
+from gitinsight.config import config
 
 con = Console()
 
