@@ -1,1 +1,142 @@
-# GitInsight
+<div align="center">
+
+# GitInsight <sub>`v1.0.0`</sub>
+
+A high-performance CLI tool for analyzing GitHub user profiles and generating meaningful insight reports.
+<br>
+
+<img src="https://img.shields.io/badge/version-v1.0.0-blue" alt="Version">
+<br>
+<br>
+<img src="https://img.shields.io/badge/license-MIT-blue" alt="License">
+<img src="https://img.shields.io/badge/language-Python-blue" alt="Language">
+<br>
+</div>
+
+---
+
+Engineered with asynchronous Python to ensure rapid data retrieval without rate-limiting bottlenecks, GitInsight provides developers and recruiters with an immediate, deep-dive view into any GitHub footprint directly from the terminal.
+
+<br>
+
+## Contents
+* [Features](#features)
+* [Installation](#installation)
+* [Configuration](#configuration)
+* [Usage](#usage)
+* [Architecture & Technology Stack](#architecture--technology-stack)
+* [Preview](#preview)
+* [Local Development](#local-development)
+* [License](#license)
+
+<br>
+
+## Features
+* **Asynchronous Data Retrieval:** Utilizes `aiohttp` and `asyncio` to concurrently fetch user profiles, repositories, and recent events, significantly reducing wait times.
+* **Terminal User Interface (TUI):** Powered by `rich`, featuring live loading indicators, color-coded data tables, and formatted statistical outputs for maximum readability.
+* **Automated PDF Generation:** Instantly compile a user's GitHub statistics and repository data into a clean, exportable PDF report.
+* **Secure Credential Management:** Securely caches your GitHub Personal Access Token locally with restricted permissions, requiring authentication only on the initial run.
+
+<br>
+
+## Installation
+GitInsight is available on the Python Package Index (PyPI). It requires Python 3.8 or higher. 
+
+Install the package globally using pip:
+```bash
+pip install gitinsight-py
+```
+
+<br>
+
+## Configuration
+
+To bypass standard GitHub API rate limits, GitInsight requires a GitHub Personal Access Token. 
+
+Upon your first time executing the command, the CLI will prompt you for this token:
+
+```bash
+Welcome to GitInsight! Setup Required.
+Please enter your GitHub Personal Access Token: 
+```
+
+The token is securely stored in your local home directory (`~/.gitinsight`). You may also provide the token via a local `.env` file or by exporting `GITHUB_TOKEN` to your system environment variables.
+
+<br>
+
+## Usage
+
+Once installed, the `gitinsight` command is registered globally on your system.
+
+**Basic Profile Analysis:**
+Execute the command followed by the target GitHub username.
+```bash
+gitinsight sshreyanshh
+```
+
+**Generate a PDF Report:**
+Append the `-r` or `--report` flag to automatically generate and save a PDF summary in your current working directory.
+```bash
+gitinsight sshreyanshh -r
+```
+
+**Enable Verbose Logging:**
+Append the `-v` or `--verbose` flag to view underlying API requests and debugging information.
+```bash
+gitinsight sshreyanshh -v
+```
+
+<br>
+
+
+## Architecture & Technology Stack
+
+* **Language:** Python 3.8+
+* **Asynchronous Networking:** [aiohttp](https://docs.aiohttp.org/)
+* **Terminal Formatting:** [Rich](https://rich.readthedocs.io/)
+* **Document Generation:** [fpdf2](https://pyfpdf.github.io/fpdf2/)
+* **Build System:** [Hatchling](https://hatch.pypa.io/)
+
+<br>
+
+## Preview
+
+`gitinsight <username>` (for insight without report) <br>
+<img src="docs/doc1.png" alt="GitInsight Output without Report" width="600">
+<br>
+<br>
+`gitinsight <username> --report` (for insight with report, snapshot of additional message displayed.)
+<img src="docs/doc3.png" alt="GitInsight Output with Report" width="600">
+<br>
+<br>
+(sample of report generated via GitInsight)
+<br>
+<img src="docs/doc4.png" alt="Report Preview" width="600">
+
+<br>
+
+## Local Development
+
+To run the project locally for development or contribution:
+
+1. Clone the repository.
+   ```bash
+   git clone https://github.com/sshreyanshh/GitInsight.git
+   ```
+2. Navigate to the project root directory.
+3. Install the package in editable mode:
+   ```bash
+   pip install -e .
+   ```
+<br>
+
+## License
+
+This project is open-source and available under the standard MIT License.
+
+<br>
+
+---
+<div align="center">
+  <h3>Developed by <b>Shreyansh Srivastava</b> · 2026</h3>
+</div>
