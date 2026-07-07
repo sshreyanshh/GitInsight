@@ -154,3 +154,5 @@ This project is open-source and available under the standard MIT License.
 <div align="center">
   <h3>Developed by <b>Shreyansh Srivastava</b> · 2026</h3>
 </div>
+
+---
