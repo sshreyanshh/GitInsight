@@ -6,6 +6,15 @@ from rich.console import Console
 
 con = Console()
 
+class UserNotFoundError(Exception):
+    pass
+
+class APIError(Exception):
+    pass
+
+class NoInternetConnectionError(Exception):
+    pass
+
 class AsyncGitHubClient:
 
     def __init__(self, token, username):
@@ -15,25 +24,21 @@ class AsyncGitHubClient:
             "Accept": "application/vnd.github.v3+json"
         }               
         self.url = config.BASE_URL + f"/{username}"
+        self.username = username
 
     async def _makeRequest(self, session, url, params = None):
         try:
             async with session.get(url, headers = self.headers, params = params) as response:
                 if response.status == 404:
-                    logging.error(f"User '{self.username}' not found.")
-                    logging.info("Check Username and try again.")
-                    con.print("[bold red]EXITING PROGRAM[/bold red]")
-                    exit()
+                    raise UserNotFoundError(f"User '{self.username}' not found.")
 
                 if response.status != 200:
-                    logging.error(f"Error Occurred. Status Code: {response.status}")
-                    return None
-                
+                    raise APIError(f"API Error. Status Code: {response.status}")
+
                 return await response.json()
         
         except aiohttp.ClientConnectionError:
-            logging.critical("No Internet Connection. Connect to internet and retry")
-            return None
+            raise NoInternetConnectionError("No Internet Connection. Connect to internet and retry")
         
     async def fetchUser(self, session):
         url = self.url

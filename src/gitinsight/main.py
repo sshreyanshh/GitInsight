@@ -8,7 +8,7 @@ from gitinsight.config import config
 import argparse
 from gitinsight.config import setupLogging
 import asyncio
-from gitinsight._async import AsyncGitHubClient
+from gitinsight._async import AsyncGitHubClient, UserNotFoundError, APIError, NoInternetConnectionError
 
 con = Console()
 
@@ -30,8 +30,22 @@ def main():
 
     client = AsyncGitHubClient(token = _token, username = args.username)
 
-    with con.status("[bold green]Fetching Data....", spinner = "dots"):
-        data, repodata, eventData = asyncio.run(client.fetchAll())
+    try:
+        with con.status("[bold green]Fetching Data....", spinner = "dots"):
+            data, repodata, eventData = asyncio.run(client.fetchAll())
+    except NoInternetConnectionError as e:
+        logging.critical(str(e))
+        con.print("[bold red]EXITING PROGRAM[/bold red]")
+        exit(1)
+    except UserNotFoundError as e:
+        logging.critical(str(e))
+        logging.error("Check Username and try again.")
+        con.print("[bold red]EXITING PROGRAM[/bold red]")
+        exit(1)
+    except APIError as e:
+        logging.critical(str(e))
+        con.print("[bold red]EXITING PROGRAM[/bold red]")
+        exit(1)
 
     analysis = Analysis(repos = repodata, events = eventData)
 
