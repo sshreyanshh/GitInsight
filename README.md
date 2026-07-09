@@ -1,11 +1,11 @@
 <div align="center">
 
-# GitInsight <sub>`v1.0.0`</sub>
+# GitInsight <sub>`v1.0.2`</sub>
 
 A high-performance CLI tool for analyzing GitHub user profiles and generating meaningful insight reports.
 <br>
 
-<img src="https://img.shields.io/badge/version-v1.0.0-blue" alt="Version">
+<img src="https://img.shields.io/badge/version-v1.0.2-blue" alt="Version">
 <br>
 <br>
 <img src="https://img.shields.io/badge/license-MIT-blue" alt="License">
@@ -27,6 +27,7 @@ Engineered with asynchronous Python to ensure rapid data retrieval without rate-
 * [Architecture & Technology Stack](#architecture--technology-stack)
 * [Preview](#preview)
 * [Local Development](#local-development)
+* [Changelog](#changelog)
 * [License](#license)
 
 <br>
@@ -35,7 +36,7 @@ Engineered with asynchronous Python to ensure rapid data retrieval without rate-
 * **Asynchronous Data Retrieval:** Utilizes `aiohttp` and `asyncio` to concurrently fetch user profiles, repositories, and recent events, significantly reducing wait times.
 * **Terminal User Interface (TUI):** Powered by `rich`, featuring live loading indicators, color-coded data tables, and formatted statistical outputs for maximum readability.
 * **Automated PDF Generation:** Instantly compile a user's GitHub statistics and repository data into a clean, exportable PDF report.
-* **Secure Credential Management:** Securely caches your GitHub Personal Access Token locally with restricted permissions, requiring authentication only on the initial run.
+* **Secure Credential Management:** Securely caches your GitHub Personal Access Token locally with restricted permissions.
 
 <br>
 
@@ -51,7 +52,18 @@ pip install gitinsight-py
 
 ## Configuration
 
-To bypass standard GitHub API rate limits, GitInsight requires a GitHub Personal Access Token. 
+By default, GitInsight does not require a GitHub Personal Access Token. This allows upto 60 requests per minute.
+
+To bypass standard GitHub API rate limits, add a token by using:
+```bash
+gitinsight --token TOKEN
+```
+
+To remove the saved token and fall back to unauthenticated requests, run:
+```bash
+gitinsight --clear-token
+```
+This removes the cached `~/.gitinsight` file; any `GITHUB_TOKEN` from your shell or `.env` file still takes precedence.
 
 ### Getting Your Token
 
@@ -67,12 +79,6 @@ To bypass standard GitHub API rate limits, GitInsight requires a GitHub Personal
 
 <br>
 
-Upon your first time executing the command, the CLI will prompt you for this token:
-
-```bash
-Welcome to GitInsight! Setup Required.
-Please enter your GitHub Personal Access Token: 
-```
 
 The token is securely stored in your local home directory (`~/.gitinsight`). You may also provide the token via a local `.env` file or by exporting `GITHUB_TOKEN` to your system environment variables.
 
@@ -142,6 +148,17 @@ To run the project locally for development or contribution:
    ```bash
    pip install -e .
    ```
+<br>
+
+## Changelog
+### v1.0.2
+- Improved error handling with specific exception types
+- Made Github PAT optional
+### v1.0.1
+- Fixed crash when entering a nonexistent GitHub username
+### v1.0.0
+- Initial release
+
 <br>
 
 ## License

@@ -11,8 +11,15 @@ def resolveToken(newToken=None):
     if newToken is not None:
         newToken = newToken.strip()
         if not newToken:
-            print("GitHub Personal Access Token cannot be empty.")
-            exit(1)
+            if configFile.exists():
+                try:
+                    configFile.unlink()
+                    print(f"Token removed from {configFile}.")
+                except Exception as e:
+                    print(f"Error removing token from {configFile}: {e}")
+            else:
+                print(f"No saved token found at {configFile}.")
+            return None
         try:
             with open(configFile, "w") as f:
                 f.write(newToken)
@@ -33,7 +40,7 @@ def resolveToken(newToken=None):
             if token:
                 return token
     
-    print("No GitHub PAT token found. proceeding with unauthenticated requests (lower rate limits). Use --token to set one.")
+    # print("No GitHub PAT token found. proceeding with unauthenticated requests (lower rate limits). Use --token to set one.")
     return None
 
 

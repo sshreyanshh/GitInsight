@@ -1,4 +1,5 @@
 import logging
+import os
 from gitinsight.client import GitHubClient
 from gitinsight.display import Display
 from gitinsight.analysis import Analysis
@@ -8,20 +9,30 @@ from gitinsight.config import config, resolveToken
 import argparse
 from gitinsight.config import setupLogging
 import asyncio
-from gitinsight._async import AsyncGitHubClient
+from gitinsight._async import AsyncGitHubClient, UserNotFoundError, APIError, NoInternetConnectionError
 
 con = Console()
 
 def main():
     parser = argparse.ArgumentParser(description = "GitInsight - A CLI tool to analyze GitHub user data and generate reports.")
-    parser.add_argument("username", help = "GitHub username to analyze")
+    parser.add_argument("username", nargs = "?", help = "GitHub username to analyze")
     parser.add_argument("-r", "--report", action = "store_true", help = "Generate PDF report")
     parser.add_argument("-v", "--verbose", action = "store_true", help = "Enable verbose output")
     parser.add_argument("--token", help = "GitHub PAT to increase limits")
+    parser.add_argument("--clear-token", action = "store_true", help = "Remove the saved GitHub PAT")
 
     args = parser.parse_args()
 
     setupLogging(args.verbose)
+
+    if args.token and args.clear_token:
+        parser.error("--token and --clear-token cannot be used together")
+
+    if args.clear_token:
+        resolveToken("")
+        config.GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+        if not args.username:
+            return
 
     if args.token:
         config.GITHUB_TOKEN = resolveToken(args.token)
@@ -29,7 +40,7 @@ def main():
     _token = config.GITHUB_TOKEN
 
     if not args.username:
-        if args.token:
+        if args.token or args.clear_token:
             return
         parser.error("username is required")
     if not _token:
@@ -37,8 +48,22 @@ def main():
 
     client = AsyncGitHubClient(token = _token, username = args.username)
 
-    with con.status("[bold green]Fetching Data....", spinner = "dots"):
-        data, repodata, eventData = asyncio.run(client.fetchAll())
+    try:
+        with con.status("[bold green]Fetching Data....", spinner = "dots"):
+            data, repodata, eventData = asyncio.run(client.fetchAll())
+    except NoInternetConnectionError as e:
+        logging.critical(str(e))
+        con.print("[bold red]EXITING PROGRAM[/bold red]")
+        exit(1)
+    except UserNotFoundError as e:
+        logging.critical(str(e))
+        logging.error("Check Username and try again.")
+        con.print("[bold red]EXITING PROGRAM[/bold red]")
+        exit(1)
+    except APIError as e:
+        logging.critical(str(e))
+        con.print("[bold red]EXITING PROGRAM[/bold red]")
+        exit(1)
 
     analysis = Analysis(repos = repodata, events = eventData)
 
