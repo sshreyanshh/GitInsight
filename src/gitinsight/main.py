@@ -4,7 +4,7 @@ from gitinsight.display import Display
 from gitinsight.analysis import Analysis
 from rich.console import Console
 from gitinsight.report import GitInsightReport
-from gitinsight.config import config
+from gitinsight.config import config, resolveToken
 import argparse
 from gitinsight.config import setupLogging
 import asyncio
@@ -17,16 +17,23 @@ def main():
     parser.add_argument("username", help = "GitHub username to analyze")
     parser.add_argument("-r", "--report", action = "store_true", help = "Generate PDF report")
     parser.add_argument("-v", "--verbose", action = "store_true", help = "Enable verbose output")
+    parser.add_argument("--token", help = "GitHub PAT to increase limits")
 
     args = parser.parse_args()
 
     setupLogging(args.verbose)
 
+    if args.token:
+        config.GITHUB_TOKEN = resolveToken(args.token)
+
     _token = config.GITHUB_TOKEN
 
+    if not args.username:
+        if args.token:
+            return
+        parser.error("username is required")
     if not _token:
-        logging.critical("GitHub token not found. Please set the GITHUB_TOKEN environment variable.")
-        exit(1)
+        logging.info("No token found. Proceeding with unauthenticated GitHub API requests.\nAdd a GitHub PAT to increase limits.")
 
     client = AsyncGitHubClient(token = _token, username = args.username)
 
