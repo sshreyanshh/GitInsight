@@ -163,10 +163,7 @@ To run the project locally for development or contribution:
 - Fixed crash when entering a nonexistent GitHub username
 ### v1.0.0
 - Initial release
-<br>
-> Unauthenticated Mode in v1.1.0 contributed by [@rushikoul](https://github.com/rushilkoul).
-<br>
-
+  
 <br>
 
 ## License
