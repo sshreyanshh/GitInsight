@@ -9,10 +9,9 @@ class GitHubClient:
 
     def __init__(self, token, username):
         self.token = token 
-        self.headers = {
-            "Authorization": f"token {self.token}",
-            "Accept": "application/vnd.github.v3+json"
-        }               
+        self.headers = {"Accept": "application/vnd.github.v3+json"}
+        if self.token:
+            self.headers["Authorization"] = f"token {self.token}"
         self.baseURL = config.BASE_URL
         self.username = username
     

@@ -4,6 +4,8 @@ from datetime import datetime
 class Analysis:
 
     def __init__(self, repos, events):
+        repos = repos or []
+        events = events or []
         self.repos = [repo for repo in repos if not repo.get('fork')]
         self.events = events
         

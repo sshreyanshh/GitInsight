@@ -19,16 +19,19 @@ class AsyncGitHubClient:
 
     def __init__(self, token, username):
         self.token = token 
-        self.headers = {
-            "Authorization": f"token {self.token}",
-            "Accept": "application/vnd.github.v3+json"
-        }               
+        self.headers = {"Accept": "application/vnd.github.v3+json"}
+        if self.token:
+            self.headers["Authorization"] = f"token {self.token}"
         self.url = config.BASE_URL + f"/{username}"
         self.username = username
 
     async def _makeRequest(self, session, url, params = None):
         try:
             async with session.get(url, headers = self.headers, params = params) as response:
+                if response.status in (403, 429):
+                    if response.headers.get("X-RateLimit-Remaining") == "0":
+                        raise APIError("GitHub API rate limit reached for unauthenticated requests. \nAdd a GitHub Personal Access Token. read README.md/Getting Your Token")
+
                 if response.status == 404:
                     raise UserNotFoundError(f"User '{self.username}' not found.")
 
