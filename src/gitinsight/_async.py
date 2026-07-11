@@ -30,9 +30,7 @@ class AsyncGitHubClient:
             async with session.get(url, headers = self.headers, params = params) as response:
                 if response.status in (403, 429):
                     if response.headers.get("X-RateLimit-Remaining") == "0":
-                        logging.error("GitHub API rate limit reached for unauthenticated requests.")
-                        logging.info("Add a GitHub Personal Access Token. read README.md/Getting Your Token")
-                        return None
+                        raise APIError("GitHub API rate limit reached for unauthenticated requests. \nAdd a GitHub Personal Access Token. read README.md/Getting Your Token")
 
                 if response.status == 404:
                     raise UserNotFoundError(f"User '{self.username}' not found.")

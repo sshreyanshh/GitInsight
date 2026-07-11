@@ -31,6 +31,7 @@ def resolveToken(newToken=None):
         return newToken
 
     token = os.getenv("GITHUB_TOKEN")
+    
     if token:
         return token
 
@@ -40,7 +41,6 @@ def resolveToken(newToken=None):
             if token:
                 return token
     
-    # print("No GitHub PAT token found. proceeding with unauthenticated requests (lower rate limits). Use --token to set one.")
     return None
 
 

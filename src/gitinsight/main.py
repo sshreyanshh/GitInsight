@@ -45,6 +45,7 @@ def main():
         parser.error("username is required")
     if not _token:
         logging.info("No token found. Proceeding with unauthenticated GitHub API requests.\nAdd a GitHub PAT to increase limits.")
+        con.print("[bold yellow]No token found. \nProceeding with unauthenticated GitHub API requests. \nAdd a GitHub PAT to increase limits. Use --token to set one.[/bold yellow]")
 
     client = AsyncGitHubClient(token = _token, username = args.username)
 
