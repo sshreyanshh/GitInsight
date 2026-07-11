@@ -1,11 +1,11 @@
 <div align="center">
 
-# GitInsight <sub>`v1.0.2`</sub>
+# GitInsight <sub>`v1.1.0`</sub>
 
 A high-performance CLI tool for analyzing GitHub user profiles and generating meaningful insight reports.
 <br>
 
-<img src="https://img.shields.io/badge/version-v1.0.2-blue" alt="Version">
+<img src="https://img.shields.io/badge/version-v1.1.0-blue" alt="Version">
 <br>
 <br>
 <img src="https://img.shields.io/badge/license-MIT-blue" alt="License">
@@ -151,13 +151,21 @@ To run the project locally for development or contribution:
 <br>
 
 ## Changelog
+### v1.1.0
+- Added unauthenticated mode (no token required)
+- Added --token flag to set GitHub PAT directly
+- Added --clear-token flag to remove saved PAT
+- Fixed token loading when running from any directory
+- Improved rate limit error handling
 ### v1.0.2
 - Improved error handling with specific exception types
-- Made Github PAT optional
 ### v1.0.1
 - Fixed crash when entering a nonexistent GitHub username
 ### v1.0.0
 - Initial release
+<br>
+> Unauthenticated Mode in v1.1.0 contributed by [@rushikoul](https://github.com/rushilkoul).
+<br>
 
 <br>
 
