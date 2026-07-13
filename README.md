@@ -172,9 +172,8 @@ This project is open-source and available under the standard MIT License.
 
 <br>
 
----
-<div align="center">
-  <h3>Developed by <b>Shreyansh Srivastava</b> · 2026</h3>
-</div>
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,100:58a6ff&height=100&section=footer"/>
+<p align="center">
+Developed by <b>Shreyansh Srivastava</b> • 2026
+</p>
 
----
